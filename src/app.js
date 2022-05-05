@@ -1,11 +1,14 @@
-import express, { NextFunction, Request, Response } from 'express';
+import express from 'express';
 import cookieParser from 'cookie-parser';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import cors from 'cors';
+import 'express-async-errors';
 
-import { config } from './config';
-import authRouter from './router/auths';
+import { csrfCheck } from './middleware/csrf.js';
+import { connectDB } from './db/database.js';
+import { config } from './config.js';
+import authRouter from './router/auth.js';
 
 const app = express();
 
@@ -23,23 +26,27 @@ app.use(cookieParser());
 app.use(cors(corsOption));
 app.use(helmet());
 app.use(morgan('tiny'));
-// app.use(csrfCheck);
+app.use(csrfCheck);
 // app.use(rateLimit);
 
 
 app.use('/auth', authRouter);
 
-app.use((req: Request, res: Response, next: NextFunction) => {
+app.use((req, res, next) => {
   res.sendStatus(404);
 });
   
-app.use((error: any, req: Request, res: Response, next: NextFunction) => {
+app.use((error, req, res, next) => {
   console.log(error);
   res.status(error.status || 500).json({
     message: error.message,
   });
 });
 
-app.listen(8080, () => {
-  console.log('server start!!');
-});
+connectDB().then(() => {
+  const server = app.listen(config.port);
+  if (server) {
+    console.log('server start !!!!');
+  }
+}).catch(console.error);
+
