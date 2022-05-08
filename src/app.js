@@ -26,7 +26,7 @@ app.use(cookieParser());
 app.use(cors(corsOption));
 app.use(helmet());
 app.use(morgan('tiny'));
-app.use(csrfCheck);
+//app.use(csrfCheck);
 // app.use(rateLimit);
 
 
@@ -46,7 +46,7 @@ app.use((error, req, res, next) => {
 connectDB().then(() => {
   const server = app.listen(config.port);
   if (server) {
-    console.log('server start !!!!');
+    console.log('server start');
   }
 }).catch(console.error);
 
