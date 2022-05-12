@@ -6,9 +6,7 @@ import { config } from '../config.js';
 import * as AuthRepository from '../data/auth.js';
 
 /*
----------------------------------
   [ MVC ( Controller ) ]
----------------------------------
 */
 /*
 ==============================
@@ -22,21 +20,53 @@ export async function signup(req, res, next) {
     return res.status(409).json({ message: `${username} 는 이미 사용중 입니다.` });
   }
   const hashed = await bcrypt.hash(password, config.bcrypt.saltRounds);
-  const userId = await AuthRepository.createUser({
+  await AuthRepository.createUser({
     username,
     password: hashed,
     tel,
   });
 
-  // [ 토큰 데이터 생성 조건 ]
-  // Database 에서 유저 확인 후 존재하면 -> Token 데이터 생성
-  // Database 에서 유저 확인 후 존재하지 않으면 -> 에러 메세지
-  const token = createJwtToken(userId);
-  setToken(res, token); // 토큰 데이터 쿠키에 저장
-  res.status(201).json({ token, username });
+  await AuthRepository.createUserCollection(username);
+
+  res.status(201).json({ username });
 }
 
+/*
+==============================
+  login
+==============================
+*/
+export async function login(req, res, next) {
+  const { username, password } = req.body;
+  const user = await AuthRepository.findByUsername(username);
+  if (!user) {
+    return res.status(401).json({ message: `유효하지 않은 닉네임, 비밀번호입니다.` });
+  }
+
+  const isValidPassword = await bcrypt.compare(password, user.password);
+  if (!isValidPassword) {
+    return res.status(401).json({ message: `유효하지 않은 닉네임, 비밀번호입니다.` });
+  }
+
+  // 토큰 생성 및 쿠키 저장
+  const token = createJwtToken(user.id);
+  setToken(res, token); // 토큰 데이터 쿠키에 저장
+  res.status(200).json({ token, username });
+  // header 안의 cookie header 로 token 데어터를 보내주지 않고 body 안에 token 데이터를 보내주는 이유?
+  // -> cookie 는 브라우저에게 특화된 것이므로 브라우저 외의 다른 클라이언트는 cookie 를 사용할 수 없기 때문에
+};
+
+export async function me(req, res, next) {
+  const user = await AuthRepository.findById(req.userId);
+  if (!user) {
+    return res.status(404).json({ message: 'User not found' });
+  }
+  res.status(200).json({ token: req.token, username: user.username });
+}
+
+// -----------------------
 // Set Jwt
+// -----------------------
 function createJwtToken(id) {
   return jwt.sign(
     {
@@ -47,7 +77,9 @@ function createJwtToken(id) {
   );
 }
 
+// -----------------------
 // Set Cookie (httpOnly)
+// -----------------------
 function setToken(res, token) {
   const options = {
     maxAge: config.jwt.expiresInSec * 1000, // - 쿠키의 유효기간을 설정한다 (jwt 시간과 동일하게 해주면 좋다 / ms로 설정)

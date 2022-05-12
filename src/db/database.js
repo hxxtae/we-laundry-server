@@ -10,8 +10,35 @@ export async function connectDB() {
     .then((client) => {
       db = client.db();
     });
-}
+};
 
 export function getUsers() {
-  return db.collection('users'); // users 이름은 MongoDB Atlas에서 자동으로 대문자로 변경된다.
-}
+  return db.collection('users');
+};
+
+export function setUserCollection(username) {
+  db.createCollection(`${username}_Customer`, (err, res) => {
+    if (err) throw err;
+    console.log(`${username}_Customer Collection created!`);
+  });
+  db.createCollection(`${username}_Address`, (err, res) => {
+    if (err) throw err;
+    console.log(`${username}_Address Collection created!`);
+  });
+  db.createCollection(`${username}_Order`, (err, res) => {
+    if (err) throw err;
+    console.log(`${username}_Order Collection created!`);
+  });
+  db.createCollection(`${username}_OrderSs`, (err, res) => {
+    if (err) throw err;
+    console.log(`${username}_OrderSs Collection created!`);
+  });
+  db.createCollection(`${username}_Products`, (err, res) => {
+    if (err) throw err;
+    console.log(`${username}_Products Collection created!`);
+  });
+  db.createCollection(`${username}_Sales`, (err, res) => {
+    if (err) throw err;
+    console.log(`${username}_Sales Collection created!`);
+  });
+};
