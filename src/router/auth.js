@@ -32,6 +32,8 @@ router.post('/login', validateCredential, authsController.login);
 
 router.get('/me', isAuth, authsController.me);
 
+router.post('/logout', authsController.logout);
+
 router.get('/csrf-token', authsController.csrfToken);
 
 export default router;
