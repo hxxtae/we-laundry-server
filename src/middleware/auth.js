@@ -44,6 +44,7 @@ export const isAuth = async (req, res, next) => {
       }
       req.userId = user.id; // req.customData (request에 사용자 지정 데이터를 추가할 수 있다.)
       req.token = token;
+      req.userName = user.username;
       next();
     }
   )

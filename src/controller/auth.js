@@ -55,7 +55,20 @@ export async function login(req, res, next) {
   // header 안의 cookie header 로 token 데어터를 보내주지 않고 body 안에 token 데이터를 보내주는 이유?
   // -> cookie 는 브라우저에게 특화된 것이므로 브라우저 외의 다른 클라이언트는 cookie 를 사용할 수 없기 때문에
 };
-
+/*
+==============================
+  logout
+==============================
+*/
+export async function logout(req, res, next) {
+  setToken(res, '');
+  res.status(200).json({ message: 'User has been logged out' });
+};
+/*
+==============================
+  me
+==============================
+*/
 export async function me(req, res, next) {
   const user = await AuthRepository.findById(req.userId);
   if (!user) {
