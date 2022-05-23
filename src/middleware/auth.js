@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 import * as AuthRepository from '../data/auth.js';
 import { config } from '../config.js'
 
-const AUTH_ERROR = { message: 'Authorization Error' };
+const AUTH_ERROR = { message: '로그인이 필요한 서비스입니다.' }; // Authorization Error
 
 export const isAuth = async (req, res, next) => {
   let token;

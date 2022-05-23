@@ -20,7 +20,7 @@ export async function getById(id, username) {
 export async function getAll(username) {
   return getAddress(username)
     .find()
-    .sort({ createdAt: -1 })
+    .sort({ _id: -1 })
     .toArray()
     .then(mapAddress);
 }
@@ -29,7 +29,7 @@ export async function create(addname, addfullname, username) {
   const add = {
     addname,
     addfullname,
-    createdAt: new Date(),
+    createdAt: new Date().toLocaleDateString(),
   }
   return getAddress(username)
     .insertOne(add)

@@ -17,7 +17,7 @@ export async function signup(req, res, next) {
   const { username, password, tel } = req.body;
   const found = await AuthRepository.findByUsername(username);
   if (found) {
-    return res.status(409).json({ message: `${username} 는 이미 사용중 입니다.` });
+    return res.status(409).json({ message: `${username} 는(은) 이미 사용중 입니다.` });
   }
   const hashed = await bcrypt.hash(password, config.bcrypt.saltRounds);
   await AuthRepository.createUser({
