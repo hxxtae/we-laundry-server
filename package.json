@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "start": "nodemon src/app.js",
+    "dev": "concurrently \"npm run start\" \"cd ../client && npm run start\"",
     "type": "concurrently \"tsc -w\" \"nodemon dist/app\" ",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
