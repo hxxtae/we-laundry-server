@@ -4,7 +4,6 @@ import { setUserCollection, getUsers } from '../db/database.js';
 /*
   [ MVC ( Model ) ]
 */
-
 export async function findByUsername(username) { // 단건 조회
   return getUsers()
     .findOne({ username })
