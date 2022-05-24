@@ -14,6 +14,7 @@ const router = express.Router();
 
 const validateAddress = [
   body('addname').trim().notEmpty().isLength({ min: 2, max: 10 }).withMessage('addname input Characters error (back-end)'),
+  body('addfullname').trim().notEmpty().isLength({ max: 50 }).withMessage('addfullname input Characters error (back-end)'),
   validation
 ];
 
