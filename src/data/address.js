@@ -1,5 +1,4 @@
 import MongoDB from 'mongodb';
-
 import { getAddress } from '../db/database.js';
 
 /*

@@ -20,6 +20,10 @@ export function getAddress(username) {
   return db.collection(`${username}_Address`);
 };
 
+export function getCustomer(username) {
+  return db.collection(`${username}_Customer`);
+};
+
 export function setUserCollection(username) {
   db.createCollection(`${username}_Customer`, (err, res) => {
     if (err) throw err;
