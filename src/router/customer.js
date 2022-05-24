@@ -24,9 +24,9 @@ router.get('/', isAuth, customerController.getCustomer);
 
 router.get('/:name', isAuth, customerController.searchByName);
 
-router.get('/:addname/:dong', isAuth, customerController.searchByDong);
+router.get('/:addid/:dong', isAuth, customerController.searchByDong);
 
-router.get('/:addname/:dong/:ho', isAuth, customerController.searchByDongAndHo);
+router.get('/:addid/:dong/:ho', isAuth, customerController.searchByDongAndHo);
 
 router.put('/:id', isAuth, customerController.updateCustomer);
 

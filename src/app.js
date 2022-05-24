@@ -28,7 +28,7 @@ app.use(cookieParser());
 app.use(cors(corsOption));
 app.use(helmet());
 app.use(morgan('tiny'));
-app.use(csrfCheck);
+//app.use(csrfCheck);
 // app.use(rateLimit);
 
 

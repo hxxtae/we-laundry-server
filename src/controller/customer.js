@@ -20,19 +20,19 @@ export async function getCustomer(req, res, next) {
 ==============================
 */
 export async function createCustomer(req, res, next) {
-  const { name, addname, addfullname, dong, ho } = req.body;
+  const { addid, addname, addfullname, name, dong, ho } = req.body;
 
   let found;
   if (name) {
     found = await customerRepository.findByName(name, req.userName);
   } else {
-    found = await customerRepository.findByDongAndHo(addname, dong, ho, req.userName);
+    found = await customerRepository.findByDongAndHo(addid, dong, ho, req.userName);
   }
 
   if (found) {
-    return res.status(409).json({ message: `${name || address + ' ' + dong + ', ' + ho} 는(은) 이미 사용중입니다.` });
+    return res.status(409).json({ message: `${name || addname + ', ' + dong + ', ' + ho} 는(은) 이미 사용중입니다.` });
   }
-  const cus = await customerRepository.create(addname, addfullname, name, dong, ho, req.userName);
+  const cus = await customerRepository.create(addid, addname, addfullname, name, dong, ho, req.userName);
   res.status(201).json(cus);
 }
 
@@ -51,40 +51,40 @@ export async function searchByName(req, res, next) {
 
 /*
 ==============================
-  search customers (addname, dong)
+  search customers (addid, dong)
 ==============================
 */
 export async function searchByDong(req, res, next) {
   console.log('search Dong');
-  const addname = req.params.addname;
+  const addid = req.params.addid;
   const dong = req.params.dong;
   
-  const cuss = await customerRepository.findByDong(addname, dong, req.userName);
+  const cuss = await customerRepository.findByDong(addid, dong, req.userName);
   res.status(200).json(cuss);
 }
 
 /*
 ==============================
-  search customer (addname, dong, ho)
+  search customer (addid, dong, ho)
 ==============================
 */
 export async function searchByDongAndHo(req, res, next) {
   console.log('search Dong And Ho');
-  const addname = req.params.addname;
+  const addid = req.params.addid;
   const dong = req.params.dong;
   const ho = req.params.ho;
   
-  const cuss = await customerRepository.findByDongAndHo(addname, dong, ho, req.userName);
+  const cuss = await customerRepository.findByDongAndHo(addid, dong, ho, req.userName);
   res.status(200).json(cuss);
 }
 
 /*
 ==============================
-  update customer (name & addname, dong, ho)
+  update customer (name & addid, dong, ho)
 ==============================
 */
 export async function updateCustomer(req, res, next) {
-  const { name, addname, addfullname, dong, ho } = req.body;
+  const { addid, addname, addfullname, name, dong, ho } = req.body;
   const id = req.params.id;
 
   const found = await customerRepository.findById(id, req.userName);
@@ -96,14 +96,14 @@ export async function updateCustomer(req, res, next) {
   if (name) {
     found2 = await customerRepository.findByName(name, req.userName);
   } else {
-    found2 = await customerRepository.findByDongAndHo(addname, dong, ho, req.userName);
+    found2 = await customerRepository.findByDongAndHo(addid, dong, ho, req.userName);
   }
 
   if (found2) {
-    return res.status(409).json({ message: `${name || addname + ' ' + dong + ', ' + ho} 는(은) 이미 존재하는 고객입니다.` });
+    return res.status(409).json({ message: `${name || addname + ', ' + dong + ', ' + ho} 는(은) 이미 존재하는 고객입니다.` });
   }
 
-  const updated = await customerRepository.update(name, addname, addfullname, dong, ho, id, req.userName);
+  const updated = await customerRepository.update(addid, addname, addfullname, name, dong, ho, id, req.userName);
   return res.status(200).json(updated);
 }
 
