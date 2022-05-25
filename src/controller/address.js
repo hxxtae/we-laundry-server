@@ -1,4 +1,5 @@
 import * as addressRepository from '../data/address.js';
+import * as customerRepository from '../data/customer.js';
 
 /*
   [ MVC ( Controller ) ]
@@ -19,7 +20,7 @@ export async function getAddress(req, res, next) {
 */
 export async function createAddress(req, res, next) {
   const { addname, addfullname } = req.body;
-  const found = await addressRepository.getByAddname(addname, req.userName)
+  const found = await addressRepository.getByAddname(addname, req.userName);
   if (found) {
     return res.status(409).json({ message: `${addname} 는(은) 이미 사용중입니다.` });
   }
@@ -40,12 +41,13 @@ export async function updateAddress(req, res, next) {
     return res.status(404).json({message: `Address id(${id}) not found`});
   }
 
-  const found2 = await addressRepository.getByAddname(addname, req.userName)
+  const found2 = await addressRepository.getByAddname(addname, req.userName);
   if (found2 && (found.addname !== addname)) {
     return res.status(409).json({ message: `${addname} 는(은) 이미 사용중입니다.` });
   }
 
   const updated = await addressRepository.update(addname, addfullname, id, req.userName);
+  await customerRepository.manyUpdate(id, addname, addfullname, req.userName); // address in customer 데이터 일관성 유지
   res.status(200).json(updated);
 }
 /*
@@ -61,5 +63,6 @@ export async function deleteAddress(req, res, next) {
   }
   
   const deleted = await addressRepository.remove(id, req.userName);
+  await customerRepository.manyRemove(id, req.userName);
   res.status(204).json(deleted);
 }

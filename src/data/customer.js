@@ -46,34 +46,49 @@ export async function getAll(username) {
     .then(mapCustomer);
 }
 
-export async function create(addname, addfullname, name, dong, ho, username) {
+export async function create(addid, addname, addfullname, name, dong, ho, username) {
   const cus = {
+    addid,
     addname,
     addfullname,
     name,
     dong,
     ho,
-    createdAt: new Date().toLocaleDateString(),
+    createdAt: new Date().toLocaleDateString("en-US"),
   }
   return getCustomer(username)
     .insertOne(cus)
     .then((data) => mapOptionalCustomer({ ...cus, _id: data.insertedId }));
 }
 
-export async function update(name, addname, addfullname, dong, ho, id, username) {
+export async function update(addid, addname, addfullname, name, dong, ho, id, username) {
   return getCustomer(username)
     .findOneAndUpdate(
       { _id: new MongoDB.ObjectId(id) }, // 업데이트할 대상 선택
-      { $set: { name, addname, addfullname, dong, ho } },
+      { $set: { addid, addname, addfullname, name, dong, ho } },
       { returnDocumnet: 'after' } // before: 업데이트 이전 값 반환, after: 업데이트 이후 값 반환
     )
     .then((result) => result.value)
     .then(mapOptionalCustomer);
 }
 
+export async function manyUpdate(addid, addname, addfullname, username) {
+  return getCustomer(username)
+    .updateMany(
+      { addid }, // 조건: 해당 주소id 인 모든 데이터
+      { $set: { addname, addfullname } },
+      { returnDocumnet: 'after' }
+    );
+}
+
 export async function remove(id, username) {
   return getCustomer(username)
     .deleteOne({ _id: new MongoDB.ObjectId(id) });
+}
+
+export async function manyRemove(addid, username) {
+  return getCustomer(username)
+    .deleteMany({ addid });
 }
 
 function mapOptionalCustomer(cus) {
