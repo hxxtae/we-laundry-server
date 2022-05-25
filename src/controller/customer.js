@@ -26,7 +26,7 @@ export async function createCustomer(req, res, next) {
   if (name) {
     found = await customerRepository.findByName(name, req.userName);
   } else {
-    found = await customerRepository.findByDongAndHo(addid, dong, ho, req.userName);
+    found = await customerRepository.findByDongAndHo(addname, dong, ho, req.userName);
   }
 
   if (found) {
@@ -51,30 +51,30 @@ export async function searchByName(req, res, next) {
 
 /*
 ==============================
-  search customers (addid, dong)
+  search customers (addname, dong)
 ==============================
 */
 export async function searchByDong(req, res, next) {
   console.log('search Dong');
-  const addid = req.params.addid;
+  const addname = req.params.addname;
   const dong = req.params.dong;
   
-  const cuss = await customerRepository.findByDong(addid, dong, req.userName);
+  const cuss = await customerRepository.findByDong(addname, dong, req.userName);
   res.status(200).json(cuss);
 }
 
 /*
 ==============================
-  search customer (addid, dong, ho)
+  search customer (addname, dong, ho)
 ==============================
 */
 export async function searchByDongAndHo(req, res, next) {
   console.log('search Dong And Ho');
-  const addid = req.params.addid;
+  const addname = req.params.addname;
   const dong = req.params.dong;
   const ho = req.params.ho;
   
-  const cuss = await customerRepository.findByDongAndHo(addid, dong, ho, req.userName);
+  const cuss = await customerRepository.findByDongAndHo(addname, dong, ho, req.userName);
   res.status(200).json(cuss);
 }
 

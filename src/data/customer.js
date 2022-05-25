@@ -4,9 +4,9 @@ import { getCustomer } from '../db/database.js';
 /*
   [ MVC ( Model ) ]
 */
-export async function findByDongAndHo(addid, dong, ho, username) {
+export async function findByDongAndHo(addname, dong, ho, username) {
   return getCustomer(username)
-    .findOne({addid, dong, ho})
+    .findOne({addname, dong, ho})
     .then(mapOptionalCustomer);
 }
 
@@ -22,9 +22,9 @@ export async function findById(id, username) {
     .then(mapOptionalCustomer);
 }
 
-export async function findByDong(addid, dong, username) {
+export async function findByDong(addname, dong, username) {
   return getCustomer(username)
-    .find({ addid, dong })
+    .find({ addname, dong })
     .sort({ _id: -1 })
     .toArray()
     .then(mapCustomer);
