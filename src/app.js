@@ -8,9 +8,7 @@ import 'express-async-errors';
 import { csrfCheck } from './middleware/csrf.js';
 import { connectDB } from './db/database.js';
 import { config } from './config.js';
-import authRouter from './router/auth.js';
-import addressRouter from './router/address.js';
-import customerRouter from './router/customer.js';
+import { authRouter, addressRouter, customerRouter, productsRouter } from './router/index.js';
 
 const app = express();
 
@@ -28,13 +26,14 @@ app.use(cookieParser());
 app.use(cors(corsOption));
 app.use(helmet());
 app.use(morgan('tiny'));
-//app.use(csrfCheck);
+app.use(csrfCheck);
 // app.use(rateLimit);
 
 
 app.use('/auth', authRouter);
 app.use('/address', addressRouter);
 app.use('/customer', customerRouter);
+app.use('/products', productsRouter);
 
 app.use((req, res, next) => {
   res.sendStatus(404);
