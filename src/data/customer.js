@@ -4,28 +4,38 @@ import { getCustomer } from '../db/database.js';
 /*
   [ MVC ( Model ) ]
 */
-export async function findByDongAndHo(addname, dong, ho, username) {
-  return getCustomer(username)
-    .findOne({addname, dong, ho})
-    .then(mapOptionalCustomer);
-}
-
-export async function findByName(name, username) {
-  return getCustomer(username)
-    .findOne({ name })
-    .then(mapOptionalCustomer);
-}
-
 export async function findById(id, username) {
   return getCustomer(username)
     .findOne({ _id: new MongoDB.ObjectId(id) })
     .then(mapOptionalCustomer);
 }
 
+export async function findByAddId(addid, dong, ho, username) {
+  return getCustomer(username)
+    .findOne({ addid, dong, ho })
+    .then(mapOptionalCustomer);
+}
+
+export async function findByDongAndHo(addname, dong, ho, username) {
+  return getCustomer(username)
+    .find({ addname, dong, ho })
+    .sort({ dong: 1, ho: 1 })
+    .toArray()
+    .then(mapCustomer);
+}
+
 export async function findByDong(addname, dong, username) {
   return getCustomer(username)
     .find({ addname, dong })
-    .sort({ _id: -1 })
+    .sort({ dong: 1, ho: 1 })
+    .toArray()
+    .then(mapCustomer);
+}
+
+export async function findByAddname(addname, username) {
+  return getCustomer(username)
+    .find({ addname })
+    .sort({ dong: 1, ho: 1 })
     .toArray()
     .then(mapCustomer);
 }
@@ -66,7 +76,7 @@ export async function update(addid, addname, addfullname, name, dong, ho, id, us
     .findOneAndUpdate(
       { _id: new MongoDB.ObjectId(id) }, // 업데이트할 대상 선택
       { $set: { addid, addname, addfullname, name, dong, ho } },
-      { returnDocumnet: 'after' } // before: 업데이트 이전 값 반환, after: 업데이트 이후 값 반환
+      { returnDocument: 'after' } // before: 업데이트 이전 값 반환, after: 업데이트 이후 값 반환
     )
     .then((result) => result.value)
     .then(mapOptionalCustomer);
@@ -77,7 +87,7 @@ export async function manyUpdate(addid, addname, addfullname, username) {
     .updateMany(
       { addid }, // 조건: 해당 주소id 인 모든 데이터
       { $set: { addname, addfullname } },
-      { returnDocumnet: 'after' }
+      { returnDocument: 'after' }
     );
 }
 

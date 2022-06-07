@@ -22,15 +22,10 @@ export async function getCustomer(req, res, next) {
 export async function createCustomer(req, res, next) {
   const { addid, addname, addfullname, name, dong, ho } = req.body;
 
-  let found;
-  if (name) {
-    found = await customerRepository.findByName(name, req.userName);
-  } else {
-    found = await customerRepository.findByDongAndHo(addname, dong, ho, req.userName);
-  }
+  const found = await customerRepository.findByAddId(addid, dong, ho, req.userName);
 
   if (found) {
-    return res.status(409).json({ message: `${name || addname + ', ' + dong + ', ' + ho} 는(은) 이미 사용중입니다.` });
+    return res.status(409).json({ message: `${addname + ', ' + dong + ', ' + ho} 는(은) 이미 사용중입니다.` });
   }
   const cus = await customerRepository.create(addid, addname, addfullname, name, dong, ho, req.userName);
   res.status(201).json(cus);
@@ -39,6 +34,7 @@ export async function createCustomer(req, res, next) {
 /*
 ==============================
   search customers (name)
+  -> Not used it
 ==============================
 */
 export async function searchByName(req, res, next) {
@@ -46,6 +42,19 @@ export async function searchByName(req, res, next) {
   const name = req.params.name;
   
   const cuss = await customerRepository.findByNames(name, req.userName);
+  res.status(200).json(cuss);
+}
+
+/*
+==============================
+  search customers (addname)
+==============================
+*/
+export async function searchByAddname(req, res, next) {
+  console.log('search Addname');
+  const addname = req.params.addname;
+  
+  const cuss = await customerRepository.findByAddname(addname, req.userName);
   res.status(200).json(cuss);
 }
 
@@ -92,13 +101,7 @@ export async function updateCustomer(req, res, next) {
     return res.status(404).json({message: `Customer id(${id}) not found`});
   }
 
-  let found2;
-  if (name) {
-    found2 = await customerRepository.findByName(name, req.userName);
-  } else {
-    found2 = await customerRepository.findByDongAndHo(addid, dong, ho, req.userName);
-  }
-
+  const found2 = await customerRepository.findByAddId(addid, dong, ho, req.userName);  
   if (found2) {
     return res.status(409).json({ message: `${name || addname + ', ' + dong + ', ' + ho} 는(은) 이미 존재하는 고객입니다.` });
   }
