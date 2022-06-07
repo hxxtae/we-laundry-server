@@ -40,7 +40,7 @@ export async function update(addname, addfullname, id, username) {
     .findOneAndUpdate(
       { _id: new MongoDB.ObjectId(id) }, // 업데이트할 대상 선택
       { $set: { addname, addfullname } },
-      { returnDocumnet: 'after' } // before: 업데이트 이전 값 반환, after: 업데이트 이후 값 반환
+      { returnDocument: 'after' } // before: 업데이트 이전 값 반환, after: 업데이트 이후 값 반환
     )
     .then((result) => result.value)
     .then(mapOptionalAddress);
