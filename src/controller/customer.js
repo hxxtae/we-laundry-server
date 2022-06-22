@@ -1,4 +1,5 @@
 import * as customerRepository from '../data/customer.js';
+import * as recordsRepository from '../data/records.js';
 
 /*
   [ MVC ( Controller ) ]
@@ -107,6 +108,7 @@ export async function updateCustomer(req, res, next) {
   }
 
   const updated = await customerRepository.update(addid, addname, addfullname, name, dong, ho, id, req.userName);
+  await recordsRepository.manyUpdateByCustomer(id, addid, addname, addfullname, dong, ho, req.userName); // customer in records 데이터 일관성 유지
   return res.status(200).json(updated);
 }
 
@@ -123,5 +125,6 @@ export async function deleteCustomer(req, res, next) {
   }
   
   const deleted = await customerRepository.remove(id, req.userName);
+  await recordsRepository.manyRemoveRecordByCusid(id, req.userName); // customer in records 데이터 일관성 유지
   res.status(204).json(deleted);
 }
