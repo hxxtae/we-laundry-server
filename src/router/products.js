@@ -19,7 +19,7 @@ const validateCategory = [
 
 const validateProduct = [
   body('productName').trim().notEmpty().isLength({ min: 1, max: 10 }).withMessage('productName input Characters error (back-end)'),
-  body('price').trim().notEmpty().isLength({ min: 1, max: 7 }).withMessage('price input Characters error (back-end)'),
+  body('price').notEmpty().isLength({ min: 1, max: 7 }).withMessage('price input Characters error (back-end)'),
   validation
 ];
 
