@@ -64,7 +64,7 @@ export async function create(addid, addname, addfullname, name, dong, ho, userna
     name,
     dong,
     ho,
-    createdAt: new Date().toLocaleDateString("en-US"),
+    createdAt: new Date().toLocaleDateString("ko-KR"),
   }
   return getCustomer(username)
     .insertOne(cus)
@@ -96,7 +96,7 @@ export async function remove(id, username) {
     .deleteOne({ _id: new MongoDB.ObjectId(id) });
 }
 
-export async function manyRemove(addid, username) {
+export async function manyRemoveCustomerByAddid(addid, username) {
   return getCustomer(username)
     .deleteMany({ addid });
 }

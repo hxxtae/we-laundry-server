@@ -1,5 +1,6 @@
 import * as addressRepository from '../data/address.js';
 import * as customerRepository from '../data/customer.js';
+import * as recordsRepository from '../data/records.js';
 
 /*
   [ MVC ( Controller ) ]
@@ -48,6 +49,7 @@ export async function updateAddress(req, res, next) {
 
   const updated = await addressRepository.update(addname, addfullname, id, req.userName);
   await customerRepository.manyUpdate(id, addname, addfullname, req.userName); // address in customer 데이터 일관성 유지
+  await recordsRepository.manyUpdateByAddress(id, addname, addfullname, req.userName); // address in records 데이터 일관성 유지
   res.status(200).json(updated);
 }
 /*
@@ -63,6 +65,7 @@ export async function deleteAddress(req, res, next) {
   }
   
   const deleted = await addressRepository.remove(id, req.userName);
-  await customerRepository.manyRemove(id, req.userName);
+  await customerRepository.manyRemoveCustomerByAddid(id, req.userName); // address in customer 데이터 일관성 유지
+  await recordsRepository.manyRemoveRecordByAddid(id, req.userName); // address in records 데이터 일관성 유지
   res.status(204).json(deleted);
 }

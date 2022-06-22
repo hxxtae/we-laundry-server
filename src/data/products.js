@@ -29,7 +29,7 @@ export async function createToCategory(categoryName, username) {
   const productObj = {
     categoryName,
     products: [],
-    createAt: new Date().toLocaleDateString("en-US"),
+    createAt: new Date().toLocaleDateString("ko-KR"),
   };
   return getProducts(username)
     .insertOne(productObj)
@@ -43,9 +43,9 @@ export async function createToProduct(id, productName, price, username) {
       {
         $push: {
           products: {
-            productId: Date.now(),
+            productId: Date.now().toString(),
             productName,
-            price,
+            price: Number(price),
           }
         }
       },

@@ -28,7 +28,7 @@ export async function create(addname, addfullname, username) {
   const add = {
     addname,
     addfullname,
-    createdAt: new Date().toLocaleDateString("en-US"),
+    createdAt: new Date().toLocaleDateString("ko-KR"),
   }
   return getAddress(username)
     .insertOne(add)
