@@ -32,29 +32,47 @@ export function getRecords(username) {
   return db.collection(`${username}_Records`);
 };
 
+export function getProductSales(username) {
+  return db.collection(`${username}_Product_Sales`);
+};
+
+export function getOrderSales(username) {
+  return db.collection(`${username}_Order_Sales`);
+};
+
 export function setUserCollection(username) {
+  // Address
   db.createCollection(`${username}_Address`, (err, res) => {
     if (err) throw err;
     console.log(`${username}_Address Collection created!`);
   });
 
+  // Customer
   db.createCollection(`${username}_Customer`, (err, res) => {
     if (err) throw err;
     console.log(`${username}_Customer Collection created!`);
   });
 
+  // Products
   db.createCollection(`${username}_Products`, (err, res) => {
     if (err) throw err;
     console.log(`${username}_Products Collection created!`);
   });
 
+  // Records
   db.createCollection(`${username}_Records`, (err, res) => {
     if (err) throw err;
     console.log(`${username}_Records Collection created!`);
   });
 
-  db.createCollection(`${username}_Sales`, (err, res) => {
+  // Sales
+  db.createCollection(`${username}_Product_Sales`, (err, res) => {
     if (err) throw err;
-    console.log(`${username}_Sales Collection created!`);
+    console.log(`${username}_Product_Sales Collection created!`);
+  });
+
+  db.createCollection(`${username}_Order_Sales`, (err, res) => {
+    if (err) throw err;
+    console.log(`${username}_Order_Sales Collection created!`);
   });
 };

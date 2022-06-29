@@ -1,4 +1,5 @@
 import * as recordsRepository from '../data/records.js';
+import * as salesRepository from '../data/sales.js';
 
 /*
   [ MVC ( Controller ) ]
@@ -77,7 +78,14 @@ export async function createRecord(req, res, next) {
       laundry,
       repair,
       req.userName
-    );
+  );
+
+  // 품목 통계에 데이터 반영
+  const sales = await salesRepository.getAllOne(req.userName);
+  const { id, productStats } = sales;
+  console.log(id);
+  console.log(productStats);
+  await salesRepository.reCompositionProductSales(id, productStats, laundry, req.userName);
   
   res.status(201).json(recordObj);
 }
