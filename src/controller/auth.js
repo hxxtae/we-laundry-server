@@ -4,6 +4,7 @@ import 'express-async-errors';
 
 import { config } from '../config.js';
 import * as AuthRepository from '../data/auth.js';
+import * as SaleRepository from '../data/sales.js';
 
 /*
   [ MVC ( Controller ) ]
@@ -27,6 +28,7 @@ export async function signup(req, res, next) {
   });
 
   await AuthRepository.createUserCollection(username);
+  await SaleRepository.createProductSales(username); // 품목 통계
 
   res.status(201).json({ username });
 }
