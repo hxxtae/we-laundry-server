@@ -83,9 +83,7 @@ export async function createRecord(req, res, next) {
   // 품목 통계에 데이터 반영
   const sales = await salesRepository.getAllOne(req.userName);
   const { id, productStats } = sales;
-  console.log(id);
-  console.log(productStats);
-  await salesRepository.reCompositionProductSales(id, productStats, laundry, req.userName);
+  await salesRepository.reCompositionProductSales(id, productStats, laundry, req.userName, true);
   
   res.status(201).json(recordObj);
 }
@@ -100,9 +98,16 @@ export async function deleteRecord(req, res, next) {
   const found = await recordsRepository.findById(id, req.userName);
   if (!found) {
     return res.status(404).json({ message: `RecordObj id(${id}) not found` });
-  }  
+  }
 
+  const laundry = found.records.laundry;
   const deleted = await recordsRepository.removeRecord(id, req.userName);
+
+  // 품목 통계에 데이터 반영
+  const sales = await salesRepository.getAllOne(req.userName);
+  const { id: saleId, productStats } = sales;
+  await salesRepository.reCompositionProductSales(saleId, productStats, laundry, req.userName, false);
+  
   res.status(204).json(deleted);
 }
 
