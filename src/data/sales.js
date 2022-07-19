@@ -7,26 +7,22 @@ export async function getAllOne(username) {
     .then(mapOptionalSales);
 }
 
-export async function reCompositionProductSales(id, saleArr = [], laundryArr = [], username) {
+/*
+====================================
+  productSale update (add & remove)
+====================================
+*/
+export async function reCompositionProductSales(id, saleArr = [], laundryArr = [], username, chk) {
   if (!(laundryArr.length)) return;
-  const copyLaundry = [...laundryArr]; // 나중에 sale 에 추가할 품목들
-  const productSales = [...saleArr];
+  const copyLaundry = [...laundryArr]; // sale 에 (추가 및 차감)할 품목들
+  const productSales = [...saleArr]; // sale
+  const removeLaundry = []; // sale 에서 제외할 품목들
 
-  const updateSales = productSales.map((obj) => {
-    const laundryIdx = copyLaundry.findIndex((laundry) => laundry.productId === obj.productId);
-    if (laundryIdx === -1) return obj;
+  const updateSales = productSaleRelocation(productSales, copyLaundry, removeLaundry, chk);
 
-    const { productId, productName, count, price } = copyLaundry[laundryIdx];
-    copyLaundry.splice(laundryIdx, 1);
-    return {
-      productId,
-      productName,
-      count: obj.count + count,
-      price: obj.price + price,
-    };
-  });
-
-  const newSales = updateSales.concat(...copyLaundry);
+  const newSales = chk ?
+    updateSales.concat(...copyLaundry) : 
+    updateSales.filter((obj) => !removeLaundry.includes(obj.productId));
   
   return getProductSales(username)
     .findOneAndUpdate(
@@ -59,4 +55,37 @@ function mapOptionalSales(sale) {
 
 function mapSales(sales) {
   return sales.map(mapOptionalSales);
+}
+
+function productSaleRelocation(saleArr, laundryArr, removeArr, chk) {
+  const newSales = saleArr.map((obj) => {
+    const laundryIdx = laundryArr.findIndex((laundry) => laundry.productId === obj.productId);
+    if (laundryIdx === -1) return obj;
+
+    const { productId, productName, count, price } = laundryArr[laundryIdx];
+    laundryArr.splice(laundryIdx, 1);
+
+    let setCount = 0;
+    let setPrice = 0;
+    if (chk) {
+      setCount = parseInt(obj.count + count);
+      setPrice = parseInt(obj.price + price);
+    } else {
+      setCount = parseInt(obj.count - count);
+      setPrice = parseInt(obj.price - price);
+
+      if ((setCount <= 0) || (setPrice <= 0)) {
+        removeArr.push(productId);
+      }
+    }
+
+    return {
+      productId,
+      productName,
+      count: setCount,
+      price: setPrice,
+    };
+  });
+
+  return newSales;
 }

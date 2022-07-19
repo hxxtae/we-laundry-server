@@ -36,8 +36,12 @@ export function getProductSales(username) {
   return db.collection(`${username}_Product_Sales`);
 };
 
-export function getOrderSales(username) {
-  return db.collection(`${username}_Order_Sales`);
+export function getMonthSales(username) {
+  return db.collection(`${username}_Month_Sales`);
+};
+
+export function getYearSales(username) {
+  return db.collection(`${username}_Year_Sales`);
 };
 
 export function setUserCollection(username) {
@@ -71,8 +75,13 @@ export function setUserCollection(username) {
     console.log(`${username}_Product_Sales Collection created!`);
   });
 
-  db.createCollection(`${username}_Order_Sales`, (err, res) => {
+  db.createCollection(`${username}_Month_Sales`, (err, res) => {
     if (err) throw err;
-    console.log(`${username}_Order_Sales Collection created!`);
+    console.log(`${username}_Month_Sales Collection created!`);
+  });
+
+  db.createCollection(`${username}_Year_Sales`, (err, res) => {
+    if (err) throw err;
+    console.log(`${username}_Year_Sales Collection created!`);
   });
 };
