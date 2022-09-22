@@ -8,7 +8,7 @@ let db;
 export async function connectDB() {
   return MongoDB.MongoClient.connect(config.mongo.host)
     .then((client) => {
-      db = client.db();
+      db = client.db(config.mongo.db);
     });
 };
 
