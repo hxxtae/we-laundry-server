@@ -25,6 +25,7 @@ export const config = {
   port: parseInt(required('PORT')),
   mongo: {
     host: required('MONGODB_URI'),
+    db: required('MONGODB_NAME'),
   },
   cors: {
     allowedOrigin: required('CORS_ALLOW_ORIGIN'),
