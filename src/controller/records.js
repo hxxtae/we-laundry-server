@@ -10,7 +10,7 @@ import * as salesRepository from '../data/sales.js';
 ==============================
 */
 export async function searchByDate(req, res, next) {
-  console.log('search Date in Records');
+  console.log('search Records By Date');
   const recordDate = req.params.recordDate;
 
   const recordObjs = await recordsRepository.findRecordsByDate(recordDate, req.userName);
@@ -44,6 +44,32 @@ export async function searchByDongAndHo(req, res, next) {
 
   const recordObjs = await recordsRepository.findRecordsByDongAndHo(addname, dong, ho, req.userName);
   res.status(200).json(recordObjs);
+}
+
+/*
+==============================
+  get records by Dong and Ho with queryString
+==============================
+*/
+export async function searchByCustomer(req, res, next) {
+  console.log('search Records By Customer');
+  const { addname, dong, ho } = req.query;
+  if (!addname) {
+    return res.status(406).json({ message: '단지명은 필수 입력값 입니다.' });
+  }
+  if (!dong) {
+    return res.status(406).json({ message: '동 주소를 입력해 주세요.' });
+  }
+  // search by addname dong ho
+  if (ho) {
+    console.log('search Dong and Ho');
+    const recordsObjs = await recordsRepository.findRecordsByDongAndHo(addname, dong, ho, req.userName);
+    return res.status(200).json(recordsObjs);
+  }
+  // search by addname dong
+  console.log('search Dong');
+  const recordsObjs = await recordsRepository.findRecordsByDong(addname, dong, req.userName);
+  res.status(200).json(recordsObjs);
 }
 
 /*

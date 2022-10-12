@@ -23,13 +23,15 @@ const validateProduct = [
   validation
 ];
 
-router.post('/', isAuth, validateCategory, productsController.createCategory);
-router.put('/create/:id', isAuth, validateProduct, productsController.createProduct);
-
 router.get('/', isAuth, productsController.getProducts);
 
+router.post('/', isAuth, validateCategory, productsController.createCategory);
+
+router.post('/list', isAuth, validateProduct, productsController.createProduct);
+
 router.put('/:id', isAuth, productsController.updateCategory);
-router.put('/update/:id', isAuth, productsController.updateProduct);
+
+router.put('/list/:id', isAuth, productsController.updateProduct);
 
 router.delete('/:id', isAuth, productsController.deleteCategory);
 
