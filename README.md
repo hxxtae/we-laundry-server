@@ -8,44 +8,11 @@
   <br>
 </p>
 
-목차
-- 프로젝트 소개
-- 기술스택
-- 구현 기능
-- 라이센스
-
-<br>
-
-## 프로젝트 소개
-
-<p align="justify">
-프로젝트 개요/동기
-</p>
-
-<p align="center">
-Text.
-</p>
-
-<br>
-
-## 기술 스택
-
 | JavaScript | Express    | MongoDB    | Jwt    |
 | :--------: | :--------: | :--------: | :----: |
 |   ![js]    | ![express] | ![MongoDB] | ![Jwt] |
 
 <br>
-
-## 구현 기능
-
-### 기능1
-### 기능2
-### 기능3
-
-
-<br>
-
-## 라이센스
 
 MIT &copy; [hxxtae](mailto:fkdlxmfkdl1@gmail.com)
 
