@@ -90,6 +90,38 @@ export async function searchByDongAndHo(req, res, next) {
 
 /*
 ==============================
+  search customer with queryString (addname, dong, ho)
+==============================
+*/
+export async function searchCustomer(req, res, next) {
+  console.log('search customer with queryString');
+  const { addname, dong, ho } = req.query;
+  if (!addname) {
+    return res.status(406).json({ message: `단지명은 필수 입력값 입니다.` });
+  }
+  if (!dong && ho) {
+    return res.status(406).json({ message: `동 주소를 입력해 주세요.` });
+  }
+  // search by addname dong ho
+  if (ho) {
+    console.log('search Dong And Ho');
+    const cuss = await customerRepository.findByDongAndHo(addname, dong, ho, req.userName);
+    return res.status(200).json(cuss);
+  }
+  // search by addname dong
+  if (dong) {
+    console.log('search Dong');
+    const cuss = await customerRepository.findByDong(addname, dong, req.userName);
+    return res.status(200).json(cuss);
+  }
+  // search by addname
+  console.log('search Addname');
+  const cuss = await customerRepository.findByAddname(addname, req.userName);
+  res.status(200).json(cuss);
+}
+
+/*
+==============================
   update customer (name & addid, dong, ho)
 ==============================
 */

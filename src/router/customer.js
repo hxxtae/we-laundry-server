@@ -18,15 +18,9 @@ const validateCustomer = [
   validation
 ];
 
+router.get('/', isAuth, customerController.searchCustomer);
+
 router.post('/', isAuth, validateCustomer, customerController.createCustomer);
-
-router.get('/', isAuth, customerController.getCustomer);
-
-router.get('/:addname', isAuth, customerController.searchByAddname);
-
-router.get('/:addname/:dong', isAuth, customerController.searchByDong);
-
-router.get('/:addname/:dong/:ho', isAuth, customerController.searchByDongAndHo);
 
 router.put('/:id', isAuth, customerController.updateCustomer);
 
