@@ -20,13 +20,11 @@ const validateRecords = [
   validation
 ];
 
-router.post('/', isAuth, validateRecords, recordsController.createRecord);
-
 router.get('/:recordDate', isAuth, recordsController.searchByDate);
 
-router.get('/:addname/:dong', isAuth, recordsController.searchByDong);
+router.get('/', isAuth, recordsController.searchByCustomer);
 
-router.get('/:addname/:dong/:ho', isAuth, recordsController.searchByDongAndHo);
+router.post('/', isAuth, validateRecords, recordsController.createRecord);
 
 router.delete('/:id', isAuth, recordsController.deleteRecord);
 
