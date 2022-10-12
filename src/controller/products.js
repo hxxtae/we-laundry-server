@@ -31,8 +31,7 @@ export async function createCategory(req, res, next) {
 }
 
 export async function createProduct(req, res, next) {
-  const { productName, price } = req.body;
-  const id = req.params.id;
+  const { id, productName, price } = req.body;
 
   const found = await productsRepository.findById(id, req.userName);
   if (!found) {
@@ -49,8 +48,8 @@ export async function createProduct(req, res, next) {
 ==============================
 */
 export async function updateCategory(req, res, next) {
-  const { categoryName } = req.body;
   const id = req.params.id;
+  const { categoryName } = req.body;
 
   const found = await productsRepository.findById(id, req.userName);
   if (!found) {
@@ -62,8 +61,8 @@ export async function updateCategory(req, res, next) {
 }
 
 export async function updateProduct(req, res, next) {
-  const { products } = req.body;
   const id = req.params.id;
+  const { products } = req.body;
 
   const found = await productsRepository.findById(id, req.userName);
   if (!found) {
