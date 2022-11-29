@@ -107,9 +107,7 @@ export async function createRecord(req, res, next) {
   );
 
   // 품목 통계에 데이터 반영
-  const sales = await salesRepository.getAllOne(req.userName);
-  const { id, productStats } = sales;
-  await salesRepository.reCompositionProductSales(id, productStats, laundry, req.userName, true);
+  salesRepository.reCompositionProductSales(laundry, req.userName, true);
   
   res.status(201).json(recordObj);
 }

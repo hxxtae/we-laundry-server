@@ -8,28 +8,32 @@ export async function getAllOne(username) {
 }
 
 /*
-====================================
-  productSale update (add & remove)
-====================================
+========================================
+  productStats of Update (add & remove)
+========================================
 */
-export async function reCompositionProductSales(id, saleArr = [], laundryArr = [], username, chk) {
+export async function reCompositionProductSales(laundryArr = [], username, addChk = true) {
   if (!(laundryArr.length)) return;
+
+  const productSalesFindOne = await getAllOne(username);
+  const { id, productStats } = productSalesFindOne;
+
   const copyLaundry = [...laundryArr]; // sale 에 (추가 및 차감)할 품목들
-  const productSales = [...saleArr]; // sale
+  const copyProductStats = [...productStats]; // sale
   const removeLaundry = []; // sale 에서 제외할 품목들
 
-  const updateSales = productSaleRelocation(productSales, copyLaundry, removeLaundry, chk);
+  const updateSales = productSaleRelocation(copyProductStats, copyLaundry, removeLaundry, addChk);
 
-  const newSales = chk ?
-    updateSales.concat(...copyLaundry) : 
-    updateSales.filter((obj) => !removeLaundry.includes(obj.productId));
+  const updateProductStats = addChk ?
+    updateSales.concat(...copyLaundry) : // add
+    updateSales.filter((obj) => !removeLaundry.includes(obj.productId)); // remove
   
   return getProductSales(username)
     .findOneAndUpdate(
       { _id: new MongoDB.ObjectId(id) },
       {
         $set: {
-          productStats: newSales,
+          productStats: updateProductStats,
         }
       },
       { returnDocument: 'after' }
@@ -38,6 +42,11 @@ export async function reCompositionProductSales(id, saleArr = [], laundryArr = [
     .then(mapOptionalSales);
 }
 
+/*
+=========================
+  productStats of Insert
+=========================
+*/
 export async function createProductSales(username) {
   const productSaleObj = {
     productStats: [],
@@ -47,8 +56,11 @@ export async function createProductSales(username) {
     .then((data) => mapOptionalSales({ ...productSaleObj, _id: data.insertedId }));
 }
 
-
-
+/*
+---------------------------
+  Util Function
+---------------------------
+*/
 function mapOptionalSales(sale) {
   return sale && { ...sale, id: sale._id.toString() };
 }
@@ -57,22 +69,22 @@ function mapSales(sales) {
   return sales.map(mapOptionalSales);
 }
 
-function productSaleRelocation(saleArr, laundryArr, removeArr, chk) {
-  const newSales = saleArr.map((obj) => {
-    const laundryIdx = laundryArr.findIndex((laundry) => laundry.productId === obj.productId);
-    if (laundryIdx === -1) return obj;
+function productSaleRelocation(saleArr, laundryArr, removeArr, addChk) {
+  const newSales = saleArr.map((saleObj) => {
+    const laundryIdx = laundryArr.findIndex((laundry) => laundry.productId === saleObj.productId);
+    if (laundryIdx === -1) return saleObj;
 
     const { productId, productName, count, price } = laundryArr[laundryIdx];
     laundryArr.splice(laundryIdx, 1);
 
     let setCount = 0;
     let setPrice = 0;
-    if (chk) {
-      setCount = parseInt(obj.count + count);
-      setPrice = parseInt(obj.price + price);
+    if (addChk) {
+      setCount = parseInt(saleObj.count + count);
+      setPrice = parseInt(saleObj.price + price);
     } else {
-      setCount = parseInt(obj.count - count);
-      setPrice = parseInt(obj.price - price);
+      setCount = parseInt(saleObj.count - count);
+      setPrice = parseInt(saleObj.price - price);
 
       if ((setCount <= 0) || (setPrice <= 0)) {
         removeArr.push(productId);

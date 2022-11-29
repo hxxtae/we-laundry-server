@@ -22,7 +22,7 @@ const corsOption = {
 };
 
 app.use(express.json());
-app.use(cookieParser());
+app.use(cookieParser()); // cookie-parser는 요청과 함께 들어온 쿠키를 해석하여 곧바로 req.cookies객체로 만든다.
 app.use(cors(corsOption));
 app.use(helmet());
 app.use(morgan('tiny'));
