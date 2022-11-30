@@ -124,13 +124,11 @@ export async function deleteRecord(req, res, next) {
     return res.status(404).json({ message: `RecordObj id(${id}) not found` });
   }
 
-  const laundry = found.records.laundry;
+  const laundry = [...found.records.laundry];
   const deleted = await recordsRepository.removeRecord(id, req.userName);
 
   // 품목 통계에 데이터 반영
-  const sales = await salesRepository.getAllOne(req.userName);
-  const { id: saleId, productStats } = sales;
-  await salesRepository.reCompositionProductSales(saleId, productStats, laundry, req.userName, false);
+  salesRepository.reCompositionProductSales(laundry, req.userName, false);
   
   res.status(204).json(deleted);
 }
