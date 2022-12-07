@@ -8,28 +8,28 @@ export async function getAllOne(username) {
 }
 
 /*
-====================================
-  productSale update (add & remove)
-====================================
+========================================
+  productStats of Update (add & remove)
+========================================
 */
-export async function reCompositionProductSales(id, saleArr = [], laundryArr = [], username, chk) {
+export async function reCompositionProductSales(laundryArr = [], username, addChk) {
   if (!(laundryArr.length)) return;
-  const copyLaundry = [...laundryArr]; // sale 에 (추가 및 차감)할 품목들
-  const productSales = [...saleArr]; // sale
-  const removeLaundry = []; // sale 에서 제외할 품목들
+  if (addChk == undefined) return;
 
-  const updateSales = productSaleRelocation(productSales, copyLaundry, removeLaundry, chk);
+  const productSalesFindOne = await getAllOne(username);
+  const { id, productStats } = productSalesFindOne;
 
-  const newSales = chk ?
-    updateSales.concat(...copyLaundry) : 
-    updateSales.filter((obj) => !removeLaundry.includes(obj.productId));
+  const copyLaundry = [...laundryArr]; // NOTE: productStats 에 Add 및 Remove할 품목 리스트 (주문 접수 or 주문 내역 품목 리스트)
+  const copyProductStats = [...productStats]; // NOTE: productStats 전체 품목 리스트 (전체 품목 누적 리스트)
+
+  const updateProductStats = productSaleRelocation(copyProductStats, copyLaundry, addChk);
   
   return getProductSales(username)
     .findOneAndUpdate(
       { _id: new MongoDB.ObjectId(id) },
       {
         $set: {
-          productStats: newSales,
+          productStats: updateProductStats,
         }
       },
       { returnDocument: 'after' }
@@ -38,6 +38,11 @@ export async function reCompositionProductSales(id, saleArr = [], laundryArr = [
     .then(mapOptionalSales);
 }
 
+/*
+=========================
+  productStats of Insert
+=========================
+*/
 export async function createProductSales(username) {
   const productSaleObj = {
     productStats: [],
@@ -47,8 +52,11 @@ export async function createProductSales(username) {
     .then((data) => mapOptionalSales({ ...productSaleObj, _id: data.insertedId }));
 }
 
-
-
+/*
+---------------------------
+  Util Function
+---------------------------
+*/
 function mapOptionalSales(sale) {
   return sale && { ...sale, id: sale._id.toString() };
 }
@@ -57,29 +65,45 @@ function mapSales(sales) {
   return sales.map(mapOptionalSales);
 }
 
-function productSaleRelocation(saleArr, laundryArr, removeArr, chk) {
-  const newSales = saleArr.map((obj) => {
-    const laundryIdx = laundryArr.findIndex((laundry) => laundry.productId === obj.productId);
-    if (laundryIdx === -1) return obj;
+function findMatchLaundryIdx(laundryArr, findProductId) {
+  return laundryArr.findIndex((laundry) => laundry.productId === findProductId);
+}
 
-    const { productId, productName, count, price } = laundryArr[laundryIdx];
-    laundryArr.splice(laundryIdx, 1);
+function productAddOfSales() {
+  
+}
 
-    let setCount = 0;
-    let setPrice = 0;
-    if (chk) {
-      setCount = parseInt(obj.count + count);
-      setPrice = parseInt(obj.price + price);
+function productRemoveOfSales() {
+
+}
+
+// NOTE: 주문 접수 시 Sales에 누적 품목 통계 추가 / 주문 내역 삭제 시 Sales에 누적 품목 통계 삭제
+// -> 추가 / 삭제 관심사를 분리해 주어야 한다.
+function productSaleRelocation(productStats, laundryArr, addChk) {
+  const copyLaundry = [...laundryArr];
+  const removeLaundry = [];
+  const newProductStats = productStats.map((saleObj) => {
+    const findLaundryIdx = findMatchLaundryIdx(copyLaundry, saleObj.productId);
+    if (findLaundryIdx === -1) return saleObj;
+
+    const { categoryId, categoryName, productId, productName, count, price } = copyLaundry[findLaundryIdx];
+    copyLaundry.splice(findLaundryIdx, 1);
+    let [setCount, setPrice] = [0, 0];
+    
+    if (addChk) {
+      setCount = parseInt(saleObj.count + count);
+      setPrice = parseInt(saleObj.price + price);
     } else {
-      setCount = parseInt(obj.count - count);
-      setPrice = parseInt(obj.price - price);
-
-      if ((setCount <= 0) || (setPrice <= 0)) {
-        removeArr.push(productId);
+      setCount = parseInt(saleObj.count - count);
+      setPrice = parseInt(saleObj.price - price);
+      if (setCount <= 0 || setPrice <= 0) {
+        removeLaundry.push(productId);
       }
     }
 
     return {
+      categoryId,
+      categoryName,
       productId,
       productName,
       count: setCount,
@@ -87,5 +111,9 @@ function productSaleRelocation(saleArr, laundryArr, removeArr, chk) {
     };
   });
 
-  return newSales;
+  if (addChk) {
+    return newProductStats.concat(...copyLaundry);
+  }
+  return newProductStats.filter((productObj) => !removeLaundry.includes(productObj.productId));
 }
+
