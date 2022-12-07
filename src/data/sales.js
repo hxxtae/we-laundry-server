@@ -86,7 +86,7 @@ function productSaleRelocation(productStats, laundryArr, addChk) {
     const findLaundryIdx = findMatchLaundryIdx(copyLaundry, saleObj.productId);
     if (findLaundryIdx === -1) return saleObj;
 
-    const { productId, productName, count, price } = copyLaundry[findLaundryIdx];
+    const { categoryId, categoryName, productId, productName, count, price } = copyLaundry[findLaundryIdx];
     copyLaundry.splice(findLaundryIdx, 1);
     let [setCount, setPrice] = [0, 0];
     
@@ -102,6 +102,8 @@ function productSaleRelocation(productStats, laundryArr, addChk) {
     }
 
     return {
+      categoryId,
+      categoryName,
       productId,
       productName,
       count: setCount,
