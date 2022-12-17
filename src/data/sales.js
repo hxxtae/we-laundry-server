@@ -17,6 +17,7 @@ export async function reCompositionProductSales(laundryArr = [], username, addCh
   if (addChk == undefined) return;
 
   const productSalesFindOne = await getAllOne(username);
+  if (!productSalesFindOne) return;
   const { id, productStats } = productSalesFindOne;
 
   const copyLaundry = [...laundryArr]; // NOTE: productStats 에 Add 및 Remove할 품목 리스트 (주문 접수 or 주문 내역 품목 리스트)

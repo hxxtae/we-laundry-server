@@ -79,6 +79,7 @@ export async function searchByCustomer(req, res, next) {
 */
 export async function createRecord(req, res, next) {
   const {
+    recordDate, /* 주문날짜 (string) */
     recordCount, /* 주문개수 (number) */
     recordPrice, /* 주문가격 (number) */
     cusid, /* 고객id */
@@ -93,6 +94,7 @@ export async function createRecord(req, res, next) {
   
   const recordObj = await recordsRepository
     .create(
+      recordDate,
       recordCount,
       recordPrice,
       cusid,
