@@ -10,7 +10,7 @@ import * as recordsRepository from '../data/records.js';
 ==============================
 */
 export async function getCustomer(req, res, next) {
-  console.log('search All');
+  console.log('Fetch Customer All');
   const cuss = await customerRepository.getAll(req.userName);
   res.status(200).json(cuss);
 }
