@@ -19,6 +19,7 @@ const validateCustomer = [
 ];
 
 router.get('/', isAuth, customerController.searchCustomer);
+router.get('/all', isAuth, customerController.getCustomer);
 
 router.post('/', isAuth, validateCustomer, customerController.createCustomer);
 
