@@ -18,9 +18,22 @@ export async function findById(id, username) {
     .then(mapOptionalRecords);
 }
 
-export async function findRecordsByDate(recordDate, username) {
+// export async function findRecordsByDate(recordDate, username) {
+//   return getRecords(username)
+//     .find({ recordDate })
+//     .sort({ recordDate: -1, _id: -1 })
+//     .toArray()
+//     .then(mapRecords);
+// }
+
+export async function findRecordsByDate(startDate, endDate, username) {
   return getRecords(username)
-    .find({ recordDate })
+    .find({
+      recordDate: {
+        $gte: new Date(endDate),  // endDate 부터(이상)
+        $lte: new Date(startDate) // startDate 까지(이하)
+      }
+    })
     .sort({ recordDate: -1, _id: -1 })
     .toArray()
     .then(mapRecords);
@@ -45,7 +58,7 @@ export async function findRecordsByDongAndHo(addname, dong, ho, username) {
 /* create */
 export async function create(recordDate, recordCount, recordPrice, cusid, addid, addname, dong, ho, addfullname, laundry, repair, username) {
   const recordObj = {
-    recordDate,
+    recordDate: new Date(recordDate),
     recordCount,
     recordPrice,
     cusid,
