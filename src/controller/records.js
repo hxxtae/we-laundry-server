@@ -6,14 +6,18 @@ import * as salesRepository from '../data/sales.js';
 */
 /*
 ==============================
-  get records by Date
+  get records by Date (1_Day, 1_Weeks, 1_Month)
 ==============================
 */
 export async function searchByDate(req, res, next) {
   console.log('search Records By Date');
-  const recordDate = req.params.recordDate;
+  const { startDate, endDate } = req.query;
 
-  const recordObjs = await recordsRepository.findRecordsByDate(recordDate, req.userName);
+  if (!startDate || !endDate) {
+    return res.status(406).json({ message: '날짜는 필수 입력값 입니다.' });
+  }
+
+  const recordObjs = await recordsRepository.findRecordsByDate(startDate, endDate, req.userName);
   res.status(200).json(recordObjs);
 }
 

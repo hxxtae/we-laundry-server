@@ -20,7 +20,7 @@ const validateRecords = [
   validation
 ];
 
-router.get('/:recordDate', isAuth, recordsController.searchByDate);
+router.get('/date', isAuth, recordsController.searchByDate);
 
 router.get('/', isAuth, recordsController.searchByCustomer);
 
