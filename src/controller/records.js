@@ -86,6 +86,8 @@ export async function createRecord(req, res, next) {
     recordDate, /* 주문날짜 (string) */
     recordCount, /* 주문개수 (number) */
     recordPrice, /* 주문가격 (number) */
+    recordSale, /* 할인금액 (number) */
+    recordSalePrice, /* 주문할인금액 (number) */
     cusid, /* 고객id */
     addid, /* 주소id */
     addname, /* 주소이름 */
@@ -101,6 +103,8 @@ export async function createRecord(req, res, next) {
       recordDate,
       recordCount,
       recordPrice,
+      recordSale,
+      recordSalePrice,
       cusid,
       addid,
       addname,
